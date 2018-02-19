@@ -1,0 +1,4 @@
+file-server/node_modules/
+file-server/yarn.lock
+.DS_Store
+.svn
