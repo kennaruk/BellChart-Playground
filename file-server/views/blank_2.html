@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" type="text/css">
+  <!-- Bootstrap CSS Plugin -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <!-- Bootstrap Date-Picker Plugin -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.4.1/css/bootstrap-datepicker3.css"/>
+  
+  <link rel="stylesheet" href="/stylesheets/theme.css" type="text/css">
+</head>
+
+
+<body>
+  <!-- <nav class="navbar navbar-expand-md bg-secondary navbar-dark">
+    <div class="container">
+      <a class="navbar-brand" href="#">Brand</a>
+      <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button>
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mr-auto">
+          <li class="nav-item">
+            <a class="nav-link" href="#">Features</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">Pricing</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">About</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link text-white" href="#">Contact us</a>
+          </li>
+        </ul>
+        <form class="form-inline m-0">
+          <input class="form-control mr-2" type="text" placeholder="Search">
+          <button class="btn btn-primary" type="submit">Search</button>
+        </form>
+      </div>
+    </div>
+  </nav> -->
+  <div class="p-4">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-12">
+          <div class="row">
+            <div class="col-md-4">
+              <div class="form-group"> Upper bound
+                <input type="number" class="form-control w-75" id="upperBound"> </div>
+              <div class="form-group"> Lower Bound
+                <input type="password" class="form-control w-75" id="lowerBound"> </div>
+              <!-- <button type="submit" class="btn btn-primary">Submit</button> -->
+            </div>
+            <div class="col-md-4">
+              <div class="row">
+                <div class="col-md-6">
+                  <p class="">From</p>
+                </div>
+                <div class="col-md-6">
+                    <p class="">To</p>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-6 input-group date">
+                  <input type="text" class="form-control w-50">
+                  <span class="input-group-addon" style="padding-right:2em;"><span class="glyphicon glyphicon-calendar"></span></span>
+                </div>
+                <div class="col-md-6 input-group">
+                  <input type="text" class="form-control w-50">
+                  <span class="input-group-addon" style="padding-right:2em;"><span class="glyphicon glyphicon-calendar"></span></span>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-12 input-group-addon">
+                  <button type="button" class="btn btn-default"><span class="glyphicon glyphicon-play"></span></button>
+                  <button type="button" class="btn btn-default"><span class="glyphicon glyphicon-pause"></span></button>
+                  <button type="button" class="btn btn-default"><span class="glyphicon glyphicon-stop"></span></button>
+                  <button type="button" class="btn btn-default"><span class="glyphicon glyphicon-step-backward"></span></button>
+                  <button type="button" class="btn btn-default"><span class="glyphicon glyphicon-step-forward"></span></button>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4 text-center">
+              <h4 class="text-center my-3"> Date/Time width </h4>
+              <br>
+              <div class="btn-group" data-toggle="buttons">
+                <div class="row">
+                  <div class="col-md-7">
+                    <input type="number" class="form-control" placeholder=""> </div>
+                    <select class="btn btn-outline-primary dropdown-toggle" data-toggle="dropdown" id="">
+                      &nbsp;
+                      <option class="dropdown-item"> days </option>
+                      <option class="dropdown-item"> weeks </option>
+                      <option class="dropdown-item"> month </option>
+                    </select>
+                </div>
+              </div>
+              <!--
+              <button type="submit" class="btn btn-primary">6 hrs</button>
+              <button type="submit" class="btn btn-primary">3 days</button>
+              <button type="submit" class="btn btn-primary">1 month</button> -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-12">
+          <h1 class="m-1 py-0 text-center">Date/Time: 12 February 2018 - 13 February 2018</h1>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="container">
+    <div class="row">
+      <div class="col-md-12">
+        <div class="" id="bell-chart"> </div>
+      </div>
+    </div>
+  </div>
+  <!-- JQuery Plugin -->
+  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+  <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script> -->
+  <!-- Bootstrap.js Plugin -->
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+  <!-- Bootstrap Date-Picker Plugin -->
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.4.1/js/bootstrap-datepicker.min.js"></script>
+  <!-- D3.js Plugin -->
+  <script src="https://d3js.org/d3.v4.min.js"></script>
+  <!-- Math.js Plugin -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/3.20.2/math.min.js"></script>
+  <script src="/javascripts/bell-chart.js"></script>
+
+  <script>
+    $(function() {
+      $('.input-group.date').datepicker({
+        autoclose: true,
+        todayHighlight: true
+      });
+    });
+  </script>
+  
+</body>
+
+</html>
