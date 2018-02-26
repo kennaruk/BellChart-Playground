@@ -64,17 +64,17 @@
               </div>
               <div class="row">
                 <div class="col-md-6 input-group date">
-                  <input type="text" class="form-control w-50">
+                  <input type="text" class="form-control w-50" id="date-picker-from">
                   <span class="input-group-addon" style="padding-right:2em;"><span class="glyphicon glyphicon-calendar"></span></span>
                 </div>
-                <div class="col-md-6 input-group">
-                  <input type="text" class="form-control w-50">
+                <div class="col-md-6 input-group date">
+                  <input type="text" class="form-control w-50" id="date-picker-to">
                   <span class="input-group-addon" style="padding-right:2em;"><span class="glyphicon glyphicon-calendar"></span></span>
                 </div>
               </div>
               <div class="row">
                 <div class="col-md-12 input-group-addon">
-                  <button type="button" class="btn btn-default"><span class="glyphicon glyphicon-play"></span></button>
+                  <button type="button" class="btn btn-default"><span class="glyphicon glyphicon-play" onclick="printDate()"></span></button>
                   <button type="button" class="btn btn-default"><span class="glyphicon glyphicon-pause"></span></button>
                   <button type="button" class="btn btn-default"><span class="glyphicon glyphicon-stop"></span></button>
                   <button type="button" class="btn btn-default"><span class="glyphicon glyphicon-step-backward"></span></button>
@@ -135,13 +135,10 @@
   <!-- Math.js Plugin -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/3.20.2/math.min.js"></script>
   <script src="/javascripts/bell-chart.js"></script>
-
+  <script src="/javascripts/date-picker.js"></script>
   <script>
     $(function() {
-      $('.input-group.date').datepicker({
-        autoclose: true,
-        todayHighlight: true
-      });
+      
     });
   </script>
   

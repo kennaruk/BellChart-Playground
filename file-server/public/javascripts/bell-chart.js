@@ -34,6 +34,8 @@ var svg = d3.select("#bell-chart")
 
 d3.csv("BellCurve.csv", function(error, data) {
 
+    filterDataByDate(data, new Date("01/01/18"), new Date("01/02/18"))
+
     //Sort data descending
     data.sort(function(a,b) {
         return d3.descending(+a.value, +b.value);
@@ -77,4 +79,30 @@ d3.csv("BellCurve.csv", function(error, data) {
         .attr("class", "y axis")
         .call(yAxis)
 });
+
+var startDate = new Date("2015-08-04");
+var endDate = new Date("2015-08-12");
+
+function filterDataByDate(data, startDate, endDate) {
+    var resultProductData = data.filter(function (a) {
+        var date = new Date(a.date) || {};
+        return date >= startDate && date <= endDate;
+        // console.log(a)
+        // var hitDates = a.date || {};
+        // extract all date strings
+        // console.log(hitDates);
+        
+        // hitDates = Object.keys(hitDates);
+        // improvement: use some. this is an improment because .map()
+        // and .filter() are walking through all elements.
+        // .some() stops this process if one item is found that returns true in the callback function and returns true for the whole expression
+        // hitDateMatchExists = hitDates.some(function(dateStr) {
+        //     var date = new Date(dateStr);
+        //     return date >= startDate && date <= endDate
+        // });
+        return hitDateMatchExists;
+    });;
+    console.log(resultProductData);
+}
+
 
