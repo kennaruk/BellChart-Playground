@@ -1,3 +1,4 @@
+
 function gaussian_pdf(x, mean, sigma) {
 	var gaussianConstant = 1 / Math.sqrt(2 * Math.PI),
     x = (x - mean) / sigma;
@@ -34,8 +35,8 @@ var svg = d3.select("#bell-chart")
 
 d3.csv("BellCurve.csv", function(error, data) {
 
-    filterDataByDate(data, new Date("01/01/18"), new Date("01/02/18"))
-
+    // returnData = filterDataByDate(data, new Date("01/01/18"), new Date("01/02/18"))
+    // console.log('returnData: ', returnData);
     //Sort data descending
     data.sort(function(a,b) {
         return d3.descending(+a.value, +b.value);
@@ -80,29 +81,93 @@ d3.csv("BellCurve.csv", function(error, data) {
         .call(yAxis)
 });
 
-var startDate = new Date("2015-08-04");
-var endDate = new Date("2015-08-12");
-
 function filterDataByDate(data, startDate, endDate) {
     var resultProductData = data.filter(function (a) {
         var date = new Date(a.date) || {};
+        // console.log('date: ', date, ' startDate: ', startDate)
         return date >= startDate && date <= endDate;
-        // console.log(a)
-        // var hitDates = a.date || {};
-        // extract all date strings
-        // console.log(hitDates);
-        
-        // hitDates = Object.keys(hitDates);
-        // improvement: use some. this is an improment because .map()
-        // and .filter() are walking through all elements.
-        // .some() stops this process if one item is found that returns true in the callback function and returns true for the whole expression
-        // hitDateMatchExists = hitDates.some(function(dateStr) {
-        //     var date = new Date(dateStr);
-        //     return date >= startDate && date <= endDate
-        // });
-        return hitDateMatchExists;
-    });;
-    console.log(resultProductData);
+    });
+    return resultProductData;
 }
 
+function updateDataByDate() {
+    var fromDate = $('#date-picker-from').val();
+    var toDate = $('#date-picker-to').val();
+    console.log('fromDate: '+fromDate)
+    console.log(new Date(fromDate))
+    // console.log(new Date(fromDate));
+    var startDate = new Date(fromDate);
+    var endDate = new Date(toDate);
+    
+    d3.csv("BellCurve.csv", function(error, data) {
+        // console.log("d3csv: ", data);
+        //Sort data descending
+        data.sort(function(a,b) {
+            return d3.descending(+a.value, +b.value);
+        });
+        
+        data = filterDataByDate(data, startDate, endDate);
+        // console.log('dataAfterFilter: '+data);
+        //Preparing Data
+        var sum = 0, count = 0, values = [];
+        data.forEach(function(d) {
+            d.value = +d.value;
 
+            values.push(d.value)
+            sum += d.value;
+            count ++;
+        });
+
+        //Calculated average, std, distribution
+        var average = sum/count;
+        var std = math.std(values);
+
+        data.forEach(function(d) {
+            d.distribution = +gaussian_pdf(d.value, average, std);
+        });
+
+        //Scale the range of the data
+        x.domain(d3.extent(data, function(d) { return d.value; }));
+        y.domain([d3.max(data, function(d) { return d.distribution; }), 0]);
+
+        var svg = d3.select("#bell-chart").transition();
+        svg.select(".line")   // change the line
+            .duration(0)
+            .attr("d", valueline(data));
+        svg.select(".x.axis") // change the x axis
+            .duration(750)
+            .call(xAxis);
+        svg.select(".y.axis") // change the y axis
+            .duration(750)
+            .call(yAxis);
+    });
+}
+
+/*
+// Get the data again
+    d3.csv("data-alt.csv", function(error, data) {
+       	data.forEach(function(d) {
+	    	d.date = parseDate(d.date);
+	    	d.close = +d.close;
+	    });
+
+    	// Scale the range of the data again 
+    	x.domain(d3.extent(data, function(d) { return d.date; }));
+	    y.domain([0, d3.max(data, function(d) { return d.close; })]);
+
+    // Select the section we want to apply our changes to
+    var svg = d3.select("body").transition();
+
+    // Make the changes
+        svg.select(".line")   // change the line
+            .duration(750)
+            .attr("d", valueline(data));
+        svg.select(".x.axis") // change the x axis
+            .duration(750)
+            .call(xAxis);
+        svg.select(".y.axis") // change the y axis
+            .duration(750)
+            .call(yAxis);
+
+    });
+*/
