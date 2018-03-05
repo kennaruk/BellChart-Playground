@@ -198,10 +198,15 @@ function playButton() {
     widthType = $(dateTimeWidthTypeId).val();
 
     getData(function(err, data) {
+        startDate.subtract(width, widthType);
+
         //Re-render Bell Curve
         intervalVariable = setInterval(increaseDateByTime, intervalTime);
+        
         function increaseDateByTime() {
             // console.log(startDate.format("DD MM YYYY"))
+            startDate.add(width, widthType);
+
             let startDateWithWidth = startDate.clone();
             startDateWithWidth = startDateWithWidth.add(width, widthType);
 
@@ -213,7 +218,6 @@ function playButton() {
 
             updateDataByFromToDate(data, startDate, startDateWithWidth);
             updateBoundFromTo(startDate, startDateWithWidth);
-            startDate.add(width, widthType);
         }
     });
 }
@@ -265,6 +269,7 @@ function backwardButton() {
     stopInterval();
     getData(function(err, data) {
         startDate.subtract(width, widthType);
+        
         let startDateWithWidth = startDate.clone();
         startDateWithWidth.add(width, widthType);
 
