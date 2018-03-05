@@ -76,9 +76,9 @@
                 <div class="col-md-12 input-group-addon">
                   <button type="button" class="btn btn-default"><span class="glyphicon glyphicon-play" onclick="playButton()"></span></button>
                   <button type="button" class="btn btn-default"><span class="glyphicon glyphicon-pause" onclick="stopButton()"></span></button>
-                  <button type="button" class="btn btn-default"><span class="glyphicon glyphicon-stop"></span></button>
-                  <button type="button" class="btn btn-default"><span class="glyphicon glyphicon-step-backward"></span></button>
-                  <button type="button" class="btn btn-default"><span class="glyphicon glyphicon-step-forward"></span></button>
+                  <button type="button" class="btn btn-default"><span class="glyphicon glyphicon-stop" onclick="resetButton()"></span></button>
+                  <button type="button" class="btn btn-default"><span class="glyphicon glyphicon-step-backward" onclick="backwardButton()"></span></button>
+                  <button type="button" class="btn btn-default"><span class="glyphicon glyphicon-step-forward" onclick="forwardButton()"></span></button>
                 </div>
               </div>
             </div>
@@ -88,7 +88,7 @@
               <div class="btn-group" data-toggle="buttons">
                 <div class="row">
                   <div class="col-md-7">
-                    <input type="number" class="form-control" placeholder="" id="date-time-width"> </div>
+                    <input type="number" class="form-control" placeholder="" value="1" id="date-time-width"> </div>
                     <select class="btn btn-outline-primary dropdown-toggle" data-toggle="dropdown" id="date-time-select">
                       &nbsp;
                       <option class="dropdown-item"> days </option>
@@ -111,7 +111,7 @@
     <div class="container">
       <div class="row">
         <div class="col-md-12">
-          <h1 class="m-1 py-0 text-center">Date/Time: <span id="date-time-bound-from">12 February 2018</span> - <span id="date-time-bound-to">13 February 2018</span></h1>
+          <h1 class="m-1 py-0 text-center">Date/Time: <span id="date-time-bound-from"> </span> - <span id="date-time-bound-to"> </span></h1>
         </div>
       </div>
     </div>
@@ -125,6 +125,10 @@
   </div>
   <!-- JQuery Plugin -->
   <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+  <!-- Popper.js -->
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.13.0/umd/popper.min.js"></script>
+  <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script> -->
   <!-- Bootstrap.js Plugin -->
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
   <!-- Bootstrap Date-Picker Plugin -->
@@ -142,9 +146,7 @@
 
   <script>
     $(function() {
-      // console.log(moment("03/06/2018", "MM/DD/YYYY"))
-      // console.log($('#date-time-bound-to').text("xx"))
-      console.log(moment().format('ll'))
+      
     });
   </script>
   

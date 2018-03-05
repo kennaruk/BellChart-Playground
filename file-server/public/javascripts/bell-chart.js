@@ -10,6 +10,12 @@ var dateTimeBoundToId = "#date-time-bound-to";
 //Variable
 var dateFormat = "MM/DD/YYYY";
 var fileName = "BellCurve.csv";
+var intervalTime = 1500;
+var fromDateVal;
+var startDate;
+var toDateVal;
+var endDate;
+var width, widthType;
 
 function gaussian_pdf(x, mean, sigma) {
 	var gaussianConstant = 1 / Math.sqrt(2 * Math.PI),
@@ -45,6 +51,7 @@ var svg = d3.select("#bell-chart")
     .attr("transform",
             "translate("+margin.left+","+margin.top+")");
 
+
 d3.csv("BellCurve.csv", function(error, data) {
     //Sort data descending
     data.sort(function(a,b) {
@@ -70,13 +77,16 @@ d3.csv("BellCurve.csv", function(error, data) {
     });
 
     //Scale the range of the data
-    x.domain(d3.extent(data, function(d) { return d.value; }));
-    y.domain([d3.max(data, function(d) { return d.distribution; }), 0]);
+    // x.domain(d3.extent(data, function(d) { return d.value; }));
+    // y.domain([d3.max(data, function(d) { return d.distribution; }), 0]);
 
     //Add the valueline path.
+    // svg.append("path")
+    //     .attr("class", "line")
+    //     .attr("d", valueline(data));
     svg.append("path")
         .attr("class", "line")
-        .attr("d", valueline(data));
+        .attr("d", valueline(0));
 
     //Add the X Axis
     svg.append("g")
@@ -90,21 +100,14 @@ d3.csv("BellCurve.csv", function(error, data) {
         .call(yAxis)
 });
 
-
 function filterDataByDate(data, startDate, endDate) {
-    console.log(endDate.format('ll'))
     var resultProductData = data.filter(function (a) {
         var date = moment(a.date, dateFormat);
-        // console.log(date.format('ll')+' '+startDate.format('ll')+': '+date.isAfter(startDate));
-        
-        // var date = new Date(a.date) || {};
         return (date.isSameOrAfter(startDate) && date.isSameOrBefore(endDate));
     });
     return resultProductData;
 }
 function updateBoundFromTo(fromDate, toDate) {
-    let dateTimeBoundFromId = "#date-time-bound-from";
-    let dateTimeBoundToId = "#date-time-bound-to";
     $(dateTimeBoundFromId).text(fromDate.format('ll'));
     $(dateTimeBoundToId).text(toDate.format('ll'));
 }
@@ -143,117 +146,58 @@ function updateDataByFromToDate(data, fromDate, toDate) {
         .duration(0)
         .attr("d", valueline(data));
     svg.select(".x.axis") // change the x axis
-        .duration(750)
+        .duration(intervalTime)
         .call(xAxis);
     svg.select(".y.axis") // change the y axis
-        .duration(750)
+        .duration(intervalTime)
         .call(yAxis);
 }
 
-// function updateDataByDate() {
-
-//     //From and To DatePicker value
-//     var fromDate = $('#date-picker-from').val();
-//     if(fromDate == "") {
-//         console.log('fromDate not filled.')
-//         return
-//     }
-//     var toDate = $('#date-picker-to').val();
-//     if(toDate == "") {
-//         console.log('toDate not filled.')
-//         return
-//     }
-//     // console.log('fromDate: '+fromDate)
-//     // console.log(new Date(fromDate))
-
-//     var startDate = new Date(fromDate);
-//     var endDate = new Date(toDate);
-    
-//     d3.csv("BellCurve.csv", function(error, data) {
-//         //Sort data descending
-//         data.sort(function(a,b) {
-//             return d3.descending(+a.value, +b.value);
-//         });
-        
-//         data = filterDataByDate(data, startDate, endDate);
-//         if(data.length == 0) {
-//             console.log('no data was found in this range.')
-//             return;
-//         }
-//         // console.log('dataAfterFilter: '+data);
-//         //Preparing Data
-//         var sum = 0, count = 0, values = [];
-//         data.forEach(function(d) {
-//             d.value = +d.value;
-
-//             values.push(d.value)
-//             sum += d.value;
-//             count ++;
-//         });
-
-//         //Calculated average, std, distribution
-//         var average = sum/count;
-//         var std = math.std(values);
-
-//         data.forEach(function(d) {
-//             d.distribution = +gaussian_pdf(d.value, average, std);
-//         });
-
-//         //Scale the range of the data
-//         x.domain(d3.extent(data, function(d) { return d.value; }));
-//         y.domain([d3.max(data, function(d) { return d.distribution; }), 0]);
-
-//         var svg = d3.select("#bell-chart").transition();
-//         svg.select(".line")   // change the line
-//             .duration(0)
-//             .attr("d", valueline(data));
-//         svg.select(".x.axis") // change the x axis
-//             .duration(750)
-//             .call(xAxis);
-//         svg.select(".y.axis") // change the y axis
-//             .duration(750)
-//             .call(yAxis);
-//     });
-// }
 var intervalVariable;
 function playButton() {
-    //Variable
-    var intervalTime = 1500;
-    
+    if(intervalVariable != undefined) {
+        console.log('intervalVariable not undefined')
+        return;
+    }
 
     //Get From and To Date
-    let fromDateVal = $(fromDateId).val();
+    console.log(fromDateVal)
+    if(fromDateVal == undefined) {
+        fromDateVal = $(fromDateId).val();
+        if(fromDateVal == "")
+            fromDateVal = undefined;
+    }
     if(fromDateVal == "") {
         console.log("fromDate not filled.");
         return;
     }
-    let startDate = moment(fromDateVal, dateFormat);
+    
+    if(startDate == undefined) {
+        startDate = moment(fromDateVal, dateFormat);
+    }
 
-    let toDateVal = $(toDateId).val();
+    if(toDateVal == undefined) {
+        toDateVal = $(toDateId).val();
+        if(toDateVal == "")
+            toDateVal = undefined;
+    }
     if(toDateVal == "") {
         console.log("toDate not filled.");
         return;
     }
-    let endDate = moment(toDateVal, dateFormat);
+    if(endDate == undefined)
+        endDate = moment(toDateVal, dateFormat);
     
     //Get Date/Time width
-    let width = $(dateTimeWidthId).val();
+    width = $(dateTimeWidthId).val();
     if(width == "") {
         console.log("width not filled.")
         return;
     }
     width = parseInt(width); //String to int
-    let widthType = $(dateTimeWidthTypeId).val();
+    widthType = $(dateTimeWidthTypeId).val();
 
-    //Get Data
-    let JSONdata;
-    d3.csv(fileName, function(error, data) {
-        //Sort data descending
-        data.sort(function(a,b) {
-            return d3.descending(+a.value, +b.value);
-        });
-        JSONdata = data;
-        
+    getData(function(err, data) {
         //Re-render Bell Curve
         intervalVariable = setInterval(increaseDateByTime, intervalTime);
         function increaseDateByTime() {
@@ -267,15 +211,78 @@ function playButton() {
                 return;
             }
 
-            updateDataByFromToDate(JSONdata, startDate, startDateWithWidth);
+            updateDataByFromToDate(data, startDate, startDateWithWidth);
             updateBoundFromTo(startDate, startDateWithWidth);
             startDate.add(width, widthType);
         }
     });
 }
-function stopInterval() {
-    clearInterval(intervalVariable);
+
+function getData (callback) {
+    d3.csv(fileName, function(error, data) {
+        //Sort data descending
+        data.sort(function(a,b) {
+            return d3.descending(+a.value, +b.value);
+        });
+        callback(error, data);
+    });
 }
+
+function stopInterval() {
+    if(intervalVariable != undefined)
+        clearInterval(intervalVariable);
+    intervalVariable = undefined;
+}
+
 function stopButton() {
     stopInterval();
+}
+
+function resetButton() {
+    //Reset Variable
+    fromDateVal = undefined;
+    startDate = undefined;
+    toDateVal = undefined;
+    endDate = undefined;
+
+    //Reset Boundary
+    $(dateTimeBoundFromId).text('');
+    $(dateTimeBoundToId).text('');
+
+    //Stop now Interval
+    stopInterval();
+
+    //Remove line
+    var svg = d3.select("#bell-chart").transition();
+    svg.select(".line")   // change the line
+        .duration(0)
+        .attr("d", valueline(0));
+}
+
+function backwardButton() {
+    if(startDate == undefined)
+        return;
+    stopInterval();
+    getData(function(err, data) {
+        startDate.subtract(width, widthType);
+        let startDateWithWidth = startDate.clone();
+        startDateWithWidth.add(width, widthType);
+
+        updateDataByFromToDate(data, startDate, startDateWithWidth);
+        updateBoundFromTo(startDate, startDateWithWidth);
+    });
+}
+
+function forwardButton() {
+    if(startDate == undefined)
+        return;
+    stopInterval();
+    getData(function(err, data) {
+        startDate.add(width, widthType);
+        let startDateWithWidth = startDate.clone();
+        startDateWithWidth.add(width, widthType);
+
+        updateDataByFromToDate(data, startDate, startDateWithWidth);
+        updateBoundFromTo(startDate, startDateWithWidth);
+    });
 }
