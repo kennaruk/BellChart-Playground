@@ -1,4 +1,16 @@
 
+//Tag ID
+var fromDateId = "#date-picker-from";
+var toDateId  = "#date-picker-to";
+var dateTimeWidthId = "#date-time-width";
+var dateTimeWidthTypeId = "#date-time-select option:selected";
+var dateTimeBoundFromId = "#date-time-bound-from";
+var dateTimeBoundToId = "#date-time-bound-to";
+
+//Variable
+var dateFormat = "MM/DD/YYYY";
+var fileName = "BellCurve.csv";
+
 function gaussian_pdf(x, mean, sigma) {
 	var gaussianConstant = 1 / Math.sqrt(2 * Math.PI),
     x = (x - mean) / sigma;
@@ -34,9 +46,6 @@ var svg = d3.select("#bell-chart")
             "translate("+margin.left+","+margin.top+")");
 
 d3.csv("BellCurve.csv", function(error, data) {
-
-    // returnData = filterDataByDate(data, new Date("01/01/18"), new Date("01/02/18"))
-    // console.log('returnData: ', returnData);
     //Sort data descending
     data.sort(function(a,b) {
         return d3.descending(+a.value, +b.value);
@@ -81,93 +90,192 @@ d3.csv("BellCurve.csv", function(error, data) {
         .call(yAxis)
 });
 
+
 function filterDataByDate(data, startDate, endDate) {
+    console.log(endDate.format('ll'))
     var resultProductData = data.filter(function (a) {
-        var date = new Date(a.date) || {};
-        // console.log('date: ', date, ' startDate: ', startDate)
-        return date >= startDate && date <= endDate;
+        var date = moment(a.date, dateFormat);
+        // console.log(date.format('ll')+' '+startDate.format('ll')+': '+date.isAfter(startDate));
+        
+        // var date = new Date(a.date) || {};
+        return (date.isSameOrAfter(startDate) && date.isSameOrBefore(endDate));
     });
     return resultProductData;
 }
-
-function updateDataByDate() {
-    var fromDate = $('#date-picker-from').val();
-    var toDate = $('#date-picker-to').val();
-    console.log('fromDate: '+fromDate)
-    console.log(new Date(fromDate))
-    // console.log(new Date(fromDate));
-    var startDate = new Date(fromDate);
-    var endDate = new Date(toDate);
+function updateBoundFromTo(fromDate, toDate) {
+    let dateTimeBoundFromId = "#date-time-bound-from";
+    let dateTimeBoundToId = "#date-time-bound-to";
+    $(dateTimeBoundFromId).text(fromDate.format('ll'));
+    $(dateTimeBoundToId).text(toDate.format('ll'));
+}
+function updateDataByFromToDate(data, fromDate, toDate) {
     
-    d3.csv("BellCurve.csv", function(error, data) {
-        // console.log("d3csv: ", data);
+    data = filterDataByDate(data, fromDate, toDate);
+    if(data.length == 0) {
+        console.log('no data was found in this range.')
+        return;
+    }
+
+    //Preparing Data
+    var sum = 0, count = 0, values = [];
+    data.forEach(function(d) {
+        d.value = +d.value;
+
+        values.push(d.value)
+        sum += d.value;
+        count ++;
+    });
+
+    //Calculated average, std, distribution
+    var average = sum/count;
+    var std = math.std(values);
+
+    data.forEach(function(d) {
+        d.distribution = +gaussian_pdf(d.value, average, std);
+    });
+
+    //Scale the range of the data
+    x.domain(d3.extent(data, function(d) { return d.value; }));
+    y.domain([d3.max(data, function(d) { return d.distribution; }), 0]);
+
+    var svg = d3.select("#bell-chart").transition();
+    svg.select(".line")   // change the line
+        .duration(0)
+        .attr("d", valueline(data));
+    svg.select(".x.axis") // change the x axis
+        .duration(750)
+        .call(xAxis);
+    svg.select(".y.axis") // change the y axis
+        .duration(750)
+        .call(yAxis);
+}
+
+// function updateDataByDate() {
+
+//     //From and To DatePicker value
+//     var fromDate = $('#date-picker-from').val();
+//     if(fromDate == "") {
+//         console.log('fromDate not filled.')
+//         return
+//     }
+//     var toDate = $('#date-picker-to').val();
+//     if(toDate == "") {
+//         console.log('toDate not filled.')
+//         return
+//     }
+//     // console.log('fromDate: '+fromDate)
+//     // console.log(new Date(fromDate))
+
+//     var startDate = new Date(fromDate);
+//     var endDate = new Date(toDate);
+    
+//     d3.csv("BellCurve.csv", function(error, data) {
+//         //Sort data descending
+//         data.sort(function(a,b) {
+//             return d3.descending(+a.value, +b.value);
+//         });
+        
+//         data = filterDataByDate(data, startDate, endDate);
+//         if(data.length == 0) {
+//             console.log('no data was found in this range.')
+//             return;
+//         }
+//         // console.log('dataAfterFilter: '+data);
+//         //Preparing Data
+//         var sum = 0, count = 0, values = [];
+//         data.forEach(function(d) {
+//             d.value = +d.value;
+
+//             values.push(d.value)
+//             sum += d.value;
+//             count ++;
+//         });
+
+//         //Calculated average, std, distribution
+//         var average = sum/count;
+//         var std = math.std(values);
+
+//         data.forEach(function(d) {
+//             d.distribution = +gaussian_pdf(d.value, average, std);
+//         });
+
+//         //Scale the range of the data
+//         x.domain(d3.extent(data, function(d) { return d.value; }));
+//         y.domain([d3.max(data, function(d) { return d.distribution; }), 0]);
+
+//         var svg = d3.select("#bell-chart").transition();
+//         svg.select(".line")   // change the line
+//             .duration(0)
+//             .attr("d", valueline(data));
+//         svg.select(".x.axis") // change the x axis
+//             .duration(750)
+//             .call(xAxis);
+//         svg.select(".y.axis") // change the y axis
+//             .duration(750)
+//             .call(yAxis);
+//     });
+// }
+var intervalVariable;
+function playButton() {
+    //Variable
+    var intervalTime = 1500;
+    
+
+    //Get From and To Date
+    let fromDateVal = $(fromDateId).val();
+    if(fromDateVal == "") {
+        console.log("fromDate not filled.");
+        return;
+    }
+    let startDate = moment(fromDateVal, dateFormat);
+
+    let toDateVal = $(toDateId).val();
+    if(toDateVal == "") {
+        console.log("toDate not filled.");
+        return;
+    }
+    let endDate = moment(toDateVal, dateFormat);
+    
+    //Get Date/Time width
+    let width = $(dateTimeWidthId).val();
+    if(width == "") {
+        console.log("width not filled.")
+        return;
+    }
+    width = parseInt(width); //String to int
+    let widthType = $(dateTimeWidthTypeId).val();
+
+    //Get Data
+    let JSONdata;
+    d3.csv(fileName, function(error, data) {
         //Sort data descending
         data.sort(function(a,b) {
             return d3.descending(+a.value, +b.value);
         });
+        JSONdata = data;
         
-        data = filterDataByDate(data, startDate, endDate);
-        // console.log('dataAfterFilter: '+data);
-        //Preparing Data
-        var sum = 0, count = 0, values = [];
-        data.forEach(function(d) {
-            d.value = +d.value;
+        //Re-render Bell Curve
+        intervalVariable = setInterval(increaseDateByTime, intervalTime);
+        function increaseDateByTime() {
+            // console.log(startDate.format("DD MM YYYY"))
+            let startDateWithWidth = startDate.clone();
+            startDateWithWidth = startDateWithWidth.add(width, widthType);
 
-            values.push(d.value)
-            sum += d.value;
-            count ++;
-        });
+            if(startDate.isAfter(endDate)) {
+                console.log("Reached toDate.")
+                stopInterval();
+                return;
+            }
 
-        //Calculated average, std, distribution
-        var average = sum/count;
-        var std = math.std(values);
-
-        data.forEach(function(d) {
-            d.distribution = +gaussian_pdf(d.value, average, std);
-        });
-
-        //Scale the range of the data
-        x.domain(d3.extent(data, function(d) { return d.value; }));
-        y.domain([d3.max(data, function(d) { return d.distribution; }), 0]);
-
-        var svg = d3.select("#bell-chart").transition();
-        svg.select(".line")   // change the line
-            .duration(0)
-            .attr("d", valueline(data));
-        svg.select(".x.axis") // change the x axis
-            .duration(750)
-            .call(xAxis);
-        svg.select(".y.axis") // change the y axis
-            .duration(750)
-            .call(yAxis);
+            updateDataByFromToDate(JSONdata, startDate, startDateWithWidth);
+            updateBoundFromTo(startDate, startDateWithWidth);
+            startDate.add(width, widthType);
+        }
     });
 }
-
-/*
-// Get the data again
-    d3.csv("data-alt.csv", function(error, data) {
-       	data.forEach(function(d) {
-	    	d.date = parseDate(d.date);
-	    	d.close = +d.close;
-	    });
-
-    	// Scale the range of the data again 
-    	x.domain(d3.extent(data, function(d) { return d.date; }));
-	    y.domain([0, d3.max(data, function(d) { return d.close; })]);
-
-    // Select the section we want to apply our changes to
-    var svg = d3.select("body").transition();
-
-    // Make the changes
-        svg.select(".line")   // change the line
-            .duration(750)
-            .attr("d", valueline(data));
-        svg.select(".x.axis") // change the x axis
-            .duration(750)
-            .call(xAxis);
-        svg.select(".y.axis") // change the y axis
-            .duration(750)
-            .call(yAxis);
-
-    });
-*/
+function stopInterval() {
+    clearInterval(intervalVariable);
+}
+function stopButton() {
+    stopInterval();
+}
